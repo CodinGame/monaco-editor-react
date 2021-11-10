@@ -52,7 +52,7 @@ This way, the editor is plug-and-play for simple use cases but it allows you to 
 ### Differences with [monaco-react](https://github.com/suren-atoyan/monaco-react)
 - This library outputs some dynamic `import` and rely on webpack to handle them
 - The model management is different, either you manage your models by hands or let the editor create and destroy them
-- no `onValidate`: can be done directly with monacoRef.current.editor.onDidChangeMarkers
+- no `onValidate`: can be done directly with monaco.editor.onDidChangeMarkers
 - no theme prop: the theme can be changed using `monaco.editor.setTheme`
 - To get the editor instance, use `ref` instead of `handleEditorDidMount`
 - There is no `useMonaco`, you can just use the exported `monaco`: `import { monaco }, Editor from "@codingame/monaco-editor-react";`
