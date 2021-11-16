@@ -1,6 +1,6 @@
 import React, { ForwardedRef, forwardRef, ReactElement, useEffect, useMemo, useRef, useState } from 'react'
 import debounce from 'lodash.debounce'
-import { monaco, createEditor, getMonacoLanguage, updateEditorKeybindings } from '@codingame/monaco-editor-wrapper'
+import { monaco, createEditor, getMonacoLanguage, updateEditorKeybindings, registerEditorOpenHandler } from '@codingame/monaco-editor-wrapper'
 import { useDeepMemo, useLastValueRef, useLastVersion, useThemeData, useUserConfiguration } from './hooks'
 import './style'
 
@@ -67,6 +67,13 @@ export interface MonacoEditorProps {
    * Default to using the Map<fileUri, viewState>
    */
   restoreViewState?: (editor: monaco.editor.IStandaloneCodeEditor, model: monaco.editor.ITextModel) => void
+  /**
+   * Called when the user do a ctrl+click on a reference to another model
+   * The returned editor should already contain the model before this function returns
+   *
+   * Default is opening a new editor in a popup
+   */
+  onEditorOpenRequest?: (model: monaco.editor.ITextModel, input: monaco.extra.IResourceEditorInput, source: monaco.editor.ICodeEditor, sideBySide?: boolean) => Promise<monaco.editor.ICodeEditor | null>
 }
 
 function MonacoEditor ({
@@ -83,7 +90,8 @@ function MonacoEditor ({
   keyBindingsMode = 'classic',
   markers,
   saveViewState = defaultSaveViewState,
-  restoreViewState = defaultRestoreViewState
+  restoreViewState = defaultRestoreViewState,
+  onEditorOpenRequest
 }: MonacoEditorProps, ref: ForwardedRef<monaco.editor.IStandaloneCodeEditor>): ReactElement {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>()
   const modelRef = useRef<monaco.editor.ITextModel>()
@@ -242,6 +250,20 @@ function MonacoEditor ({
       }
     }
   }, [onChange])
+
+  useEffect(() => {
+    if (onEditorOpenRequest != null) {
+      const disposable = registerEditorOpenHandler(async (model, input, source, sideBySide) => {
+        if (source === editorRef.current) {
+          return onEditorOpenRequest(model, input, source, sideBySide)
+        }
+        return null
+      })
+      return () => {
+        disposable.dispose()
+      }
+    }
+  }, [onEditorOpenRequest])
 
   // Compute height
   useEffect(() => {
