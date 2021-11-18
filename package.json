@@ -41,13 +41,5 @@
   },
   "peerDependencies": {
     "react": ">=16.0.0"
-  },
-  "browserslist": [
-    "defaults",
-    "chrome >= 59",
-    "firefox >= 68",
-    "safari >= 12",
-    "not IE 11",
-    "not IE_Mob 11"
-  ]
+  }
 }
