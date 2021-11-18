@@ -3,7 +3,8 @@
   "version": "1.0.1",
   "description": "Monaco Editor React component",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "npx eslint src/**"
   },
   "repository": {
     "type": "git",
