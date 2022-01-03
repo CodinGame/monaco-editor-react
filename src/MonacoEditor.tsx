@@ -160,7 +160,7 @@ function MonacoEditor ({
         containerElement,
         {
           model,
-          automaticLayout: true
+          ...allOptions
         },
         overrideServices
       )
