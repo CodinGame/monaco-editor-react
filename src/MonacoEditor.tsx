@@ -160,7 +160,17 @@ function MonacoEditor ({
         containerElement,
         {
           model,
-          ...allOptions
+          // We need to pass options here due to https://github.com/microsoft/monaco-editor/issues/2873
+          ...allOptions,
+          // We need to override all IStandaloneEditorConstructionOptions fields to prevent conflicts with proper editor options (especially `language`)
+          value: undefined,
+          language: undefined,
+          theme: undefined,
+          autoDetectHighContrast: undefined,
+          accessibilityHelpUrl: undefined,
+          ariaContainerElement: undefined,
+          dimension: undefined,
+          overflowWidgetsDomNode: undefined
         },
         overrideServices
       )
