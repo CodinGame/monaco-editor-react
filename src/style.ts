@@ -36,7 +36,7 @@ addStyle(`
 .react-monaco-editor-react-status-bar {
   flex: none;
   display: none;
-  padding-top: 3px;
+  padding: 3px 8px 0px 8px;
   font-size: 13px;
   font-family: "Courier New", Courier, monospace;
   font-weight: bold;
