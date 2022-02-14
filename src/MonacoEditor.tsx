@@ -13,6 +13,27 @@ function fixCode (code: string): string {
   return code.replace(/\r\n?/g, '\n')
 }
 
+type MonacoEditorOption = keyof monaco.editor.IEditorOptions
+type KeyBindingsMode = 'classic' | 'vim' | 'emacs'
+
+// Some editor properties are managed directly by monaco-vim / monaco-emacs so we don't want to override them
+const keyBindingsManagedOptions: Record<KeyBindingsMode, Set<MonacoEditorOption> | null> = {
+  vim: new Set<MonacoEditorOption>(['cursorBlinking', 'cursorWidth']),
+  emacs: new Set<MonacoEditorOption>(['cursorBlinking', 'cursorStyle']),
+  classic: null
+}
+function removeKeyBindingsManagedOptions (options: monaco.editor.IEditorOptions, keyBindingsMode: KeyBindingsMode) {
+  const managedOptions = keyBindingsManagedOptions[keyBindingsMode]
+  if (managedOptions == null) {
+    return options
+  } else {
+    return Object.fromEntries(
+      Object.entries(options)
+        .filter(([optionId]) => !managedOptions.has(optionId as MonacoEditorOption))
+    )
+  }
+}
+
 const viewStates = new Map<string, monaco.editor.ICodeEditorViewState>()
 export function defaultRestoreViewState (editor: monaco.editor.IStandaloneCodeEditor, model: monaco.editor.ITextModel): void {
   const viewState = viewStates.get(model.uri.toString())
@@ -53,7 +74,7 @@ export interface MonacoEditorProps {
   overrideServices?: monaco.editor.IEditorOverrideServices
   onChange?: (value: string, event: monaco.editor.IModelContentChangedEvent) => void
   markers?: monaco.editor.IMarkerData[]
-  keyBindingsMode?: 'classic' | 'vim' | 'emacs'
+  keyBindingsMode?: KeyBindingsMode
   keyBindings?: monaco.extra.IUserFriendlyKeybinding[]
   /**
    * Called when the editor will switch to another model
@@ -106,13 +127,13 @@ function MonacoEditor ({
 
   const userConfiguration = useUserConfiguration(monacoLanguage)
   const memoizedOptions = useDeepMemo(() => options, [options])
-  const allOptions = useMemo(() => {
-    return {
+  const allOptions = useMemo<monaco.editor.IEditorOptions>(() => {
+    return removeKeyBindingsManagedOptions({
       ...userConfiguration,
       ...memoizedOptions,
       automaticLayout: true
-    }
-  }, [memoizedOptions, userConfiguration])
+    }, keyBindingsMode)
+  }, [memoizedOptions, userConfiguration, keyBindingsMode])
 
   const modelUri = useMemo(() => {
     return fileUri != null ? monaco.Uri.parse(fileUri) : undefined
