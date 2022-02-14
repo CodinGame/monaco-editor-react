@@ -14,6 +14,7 @@ function fixCode (code: string): string {
 }
 
 type MonacoEditorOption = keyof monaco.editor.IEditorOptions
+type KeyBindingsMode = 'classic' | 'vim' | 'emacs'
 
 // Some editor properties are managed directly by monaco-vim so we don't want to override them
 const vimManagedOptions = new Set<MonacoEditorOption>(['cursorBlinking', 'cursorWidth'])
@@ -61,7 +62,7 @@ export interface MonacoEditorProps {
   overrideServices?: monaco.editor.IEditorOverrideServices
   onChange?: (value: string, event: monaco.editor.IModelContentChangedEvent) => void
   markers?: monaco.editor.IMarkerData[]
-  keyBindingsMode?: 'classic' | 'vim' | 'emacs'
+  keyBindingsMode?: KeyBindingsMode
   keyBindings?: monaco.extra.IUserFriendlyKeybinding[]
   /**
    * Called when the editor will switch to another model
