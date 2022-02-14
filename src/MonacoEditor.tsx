@@ -13,6 +13,15 @@ function fixCode (code: string): string {
   return code.replace(/\r\n?/g, '\n')
 }
 
+type MonacoEditorOptions = monaco.editor.IEditorOptions & monaco.editor.IGlobalEditorOptions
+type MonacoEditorOption = keyof MonacoEditorOptions
+
+// Some editor properties are managed directly by monaco-vim so we don't want to override them
+const vimManagedOptions = new Set<MonacoEditorOption>(['cursorBlinking', 'cursorWidth'])
+function removeVimManagedOptions (options: MonacoEditorOptions) {
+  return Object.fromEntries(Object.entries(options).filter(([optionId]) => !vimManagedOptions.has(optionId as MonacoEditorOption)))
+}
+
 const viewStates = new Map<string, monaco.editor.ICodeEditorViewState>()
 export function defaultRestoreViewState (editor: monaco.editor.IStandaloneCodeEditor, model: monaco.editor.ITextModel): void {
   const viewState = viewStates.get(model.uri.toString())
@@ -106,13 +115,15 @@ function MonacoEditor ({
 
   const userConfiguration = useUserConfiguration(monacoLanguage)
   const memoizedOptions = useDeepMemo(() => options, [options])
-  const allOptions = useMemo(() => {
-    return {
+  const isVimMode = keyBindingsMode === 'vim'
+  const allOptions = useMemo<MonacoEditorOptions>(() => {
+    const allOptions = {
       ...userConfiguration,
       ...memoizedOptions,
       automaticLayout: true
     }
-  }, [memoizedOptions, userConfiguration])
+    return !isVimMode ? allOptions : removeVimManagedOptions(allOptions)
+  }, [memoizedOptions, userConfiguration, isVimMode])
 
   const modelUri = useMemo(() => {
     return fileUri != null ? monaco.Uri.parse(fileUri) : undefined
