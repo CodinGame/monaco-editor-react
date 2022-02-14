@@ -13,12 +13,11 @@ function fixCode (code: string): string {
   return code.replace(/\r\n?/g, '\n')
 }
 
-type MonacoEditorOptions = monaco.editor.IEditorOptions & monaco.editor.IGlobalEditorOptions
-type MonacoEditorOption = keyof MonacoEditorOptions
+type MonacoEditorOption = keyof monaco.editor.IEditorOptions
 
 // Some editor properties are managed directly by monaco-vim so we don't want to override them
 const vimManagedOptions = new Set<MonacoEditorOption>(['cursorBlinking', 'cursorWidth'])
-function removeVimManagedOptions (options: MonacoEditorOptions) {
+function removeVimManagedOptions (options: monaco.editor.IEditorOptions) {
   return Object.fromEntries(Object.entries(options).filter(([optionId]) => !vimManagedOptions.has(optionId as MonacoEditorOption)))
 }
 
@@ -116,7 +115,7 @@ function MonacoEditor ({
   const userConfiguration = useUserConfiguration(monacoLanguage)
   const memoizedOptions = useDeepMemo(() => options, [options])
   const isVimMode = keyBindingsMode === 'vim'
-  const allOptions = useMemo<MonacoEditorOptions>(() => {
+  const allOptions = useMemo<monaco.editor.IEditorOptions>(() => {
     const allOptions = {
       ...userConfiguration,
       ...memoizedOptions,
