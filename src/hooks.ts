@@ -3,7 +3,7 @@ import * as monaco from 'monaco-editor'
 import deepEqual from 'deep-equal'
 import { getConfiguration, getThemeData, onConfigurationChanged } from '@codingame/monaco-editor-wrapper'
 
-const standaloneThemeService = monaco.editor.StaticServices.standaloneThemeService.get()
+const standaloneThemeService = monaco.extra.StandaloneServices.get(monaco.editor.IStandaloneThemeService)
 export function useThemeData (): monaco.extra.ColorThemeData | null {
   const [themeName, setThemeName] = useState(standaloneThemeService.getColorTheme().themeName)
   const updateTheme = (theme: monaco.editor.IColorTheme) => {
