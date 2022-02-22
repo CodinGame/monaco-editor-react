@@ -4,6 +4,7 @@
   "description": "Monaco Editor React component",
   "scripts": {
     "build": "tsc",
+    "prepublishOnly": "npm run build",
     "lint": "npx eslint src/**"
   },
   "repository": {
@@ -41,5 +42,9 @@
   },
   "peerDependencies": {
     "react": ">=16.0.0"
+  },
+  "volta": {
+    "node": "16.14.0",
+    "npm": "8.5.0"
   }
 }
