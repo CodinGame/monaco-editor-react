@@ -19,7 +19,7 @@
   ],
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@codingame/monaco-editor-wrapper": "^1.5.0",
+    "@codingame/monaco-editor-wrapper": "^1.6.0",
     "deep-equal": "^2.0.5",
     "lodash.debounce": "^4.0.8"
   },
