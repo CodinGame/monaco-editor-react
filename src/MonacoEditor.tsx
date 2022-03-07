@@ -1,6 +1,6 @@
 import React, { ForwardedRef, forwardRef, ReactElement, useEffect, useMemo, useRef, useState } from 'react'
 import debounce from 'lodash.debounce'
-import { monaco, createEditor, getMonacoLanguage, updateEditorKeybindings, registerEditorOpenHandler } from '@codingame/monaco-editor-wrapper'
+import { monaco, createEditor, getMonacoLanguage, updateEditorKeybindingsMode, registerEditorOpenHandler } from '@codingame/monaco-editor-wrapper'
 import { useDeepMemo, useLastValueRef, useLastVersion, useThemeData, useUserConfiguration } from './hooks'
 import './style'
 
@@ -75,7 +75,6 @@ export interface MonacoEditorProps {
   onChange?: (value: string, event: monaco.editor.IModelContentChangedEvent) => void
   markers?: monaco.editor.IMarkerData[]
   keyBindingsMode?: KeyBindingsMode
-  keyBindings?: monaco.extra.IUserFriendlyKeybinding[]
   /**
    * Called when the editor will switch to another model
    *
@@ -107,7 +106,6 @@ function MonacoEditor ({
   options,
   overrideServices,
   onChange,
-  keyBindings,
   keyBindingsMode = 'classic',
   markers,
   saveViewState = defaultSaveViewState,
@@ -247,14 +245,14 @@ function MonacoEditor ({
     editorRef.current!.updateOptions(allOptions)
   }, [allOptions])
 
-  // Keybindings
+  // Keybindings mode
   useEffect(() => {
     const editor = editorRef.current!
-    const disposable = updateEditorKeybindings(editor, keyBindingsMode, statusBarRef.current!, keyBindings)
+    const disposable = updateEditorKeybindingsMode(editor, keyBindingsMode, statusBarRef.current!)
     return () => {
       disposable.dispose()
     }
-  }, [keyBindings, keyBindingsMode])
+  }, [keyBindingsMode])
 
   // Update markers
   useEffect(() => {
