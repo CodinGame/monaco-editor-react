@@ -19,26 +19,26 @@
   ],
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@codingame/monaco-editor-wrapper": "^1.8.1",
+    "@codingame/monaco-editor-wrapper": "^1.10.0",
     "deep-equal": "^2.0.5",
     "lodash.debounce": "^4.0.8"
   },
   "devDependencies": {
     "@types/deep-equal": "^1.0.1",
     "@types/lodash.debounce": "^4.0.6",
-    "@types/react": "17.0.39",
-    "@typescript-eslint/eslint-plugin": "5.12.1",
-    "@typescript-eslint/parser": "5.12.1",
-    "eslint": "8.9.0",
+    "@types/react": "17.0.40",
+    "@typescript-eslint/eslint-plugin": "5.15.0",
+    "@typescript-eslint/parser": "5.15.0",
+    "eslint": "8.11.0",
     "eslint-config-standard": "16.0.3",
     "eslint-config-standard-jsx": "10.0.0",
     "eslint-plugin-import": "2.25.4",
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-promise": "6.0.0",
-    "eslint-plugin-react": "7.28.0",
+    "eslint-plugin-react": "7.29.4",
     "eslint-plugin-react-hooks": "4.3.0",
     "eslint-plugin-unused-imports": "2.0.0",
-    "typescript": "4.5.5"
+    "typescript": "4.6.2"
   },
   "peerDependencies": {
     "react": ">=16.0.0"
