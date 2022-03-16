@@ -1,7 +1,6 @@
 import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import * as monaco from 'monaco-editor'
 import deepEqual from 'deep-equal'
-import { getConfiguration, getThemeData, onConfigurationChanged } from '@codingame/monaco-editor-wrapper'
+import { getConfiguration, getThemeData, onConfigurationChanged, monaco } from '@codingame/monaco-editor-wrapper'
 
 const standaloneThemeService = monaco.extra.StandaloneServices.get(monaco.editor.IStandaloneThemeService)
 export function useThemeData (): monaco.extra.ColorThemeData | null {
