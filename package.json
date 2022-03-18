@@ -1,10 +1,9 @@
 {
   "name": "@codingame/monaco-editor-react",
-  "version": "1.7.0",
+  "version": "0.0.0-semantic-release",
   "description": "Monaco Editor React component",
   "scripts": {
     "build": "tsc",
-    "prepublishOnly": "npm run build",
     "lint": "npx eslint src/**"
   },
   "repository": {
@@ -29,6 +28,7 @@
     "@types/react": "17.0.40",
     "@typescript-eslint/eslint-plugin": "5.15.0",
     "@typescript-eslint/parser": "5.15.0",
+    "conventional-changelog-conventionalcommits": "^4.6.3",
     "eslint": "8.11.0",
     "eslint-config-standard": "16.0.3",
     "eslint-config-standard-jsx": "10.0.0",
