@@ -71,7 +71,6 @@ export interface MonacoEditorProps {
   programmingLanguage?: string
   fileUri?: string
   options?: monaco.editor.IStandaloneEditorConstructionOptions
-  overrideServices?: monaco.editor.IEditorOverrideServices
   onChange?: (value: string, event: monaco.editor.IModelContentChangedEvent) => void
   markers?: monaco.editor.IMarkerData[]
   keyBindingsMode?: KeyBindingsMode
@@ -104,7 +103,6 @@ function MonacoEditor ({
   programmingLanguage,
   value,
   options,
-  overrideServices,
   onChange,
   keyBindingsMode = 'classic',
   markers,
@@ -190,8 +188,7 @@ function MonacoEditor ({
           ariaContainerElement: undefined,
           dimension: undefined,
           overflowWidgetsDomNode: undefined
-        },
-        overrideServices
+        }
       )
       editorRef.current = editor
       if (model != null) {
@@ -211,7 +208,7 @@ function MonacoEditor ({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [overrideServices])
+  }, [])
 
   // Update value
   useEffect(() => {
