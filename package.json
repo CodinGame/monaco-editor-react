@@ -3,8 +3,9 @@
   "version": "0.0.0-semantic-release",
   "description": "Monaco Editor React component",
   "scripts": {
-    "build": "tsc",
-    "lint": "npx eslint src/**"
+    "build": "npm run lint && npm run compile",
+    "compile": "tsc",
+    "lint": "npx eslint --ext .ts src/"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,8 @@
     "lodash.debounce": "^4.0.8"
   },
   "devDependencies": {
+    "@codingame/eslint-config": "^1.1.2",
+    "@codingame/tsconfig": "^1.0.5",
     "@types/deep-equal": "^1.0.1",
     "@types/lodash.debounce": "^4.0.7",
     "@types/react": "17.0.40",
@@ -34,7 +37,6 @@
     "eslint-config-standard-jsx": "11.0.0",
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-node": "11.1.0",
-    "eslint-plugin-promise": "6.0.0",
     "eslint-plugin-react": "7.30.0",
     "eslint-plugin-react-hooks": "4.6.0",
     "eslint-plugin-unused-imports": "2.0.0",
