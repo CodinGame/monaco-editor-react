@@ -1,6 +1,7 @@
 import React, { ForwardedRef, forwardRef, ReactElement, useEffect, useMemo, useRef, useState } from 'react'
 import debounce from 'lodash.debounce'
 import { monaco, createEditor, getMonacoLanguage, updateEditorKeybindingsMode, registerEditorOpenHandler } from '@codingame/monaco-editor-wrapper'
+import { IEditorOptions } from 'vscode/service-override/modelEditor'
 import { useDeepMemo, useLastValueRef, useLastVersion, useThemeData, useUserConfiguration } from './hooks'
 import './style'
 
@@ -92,7 +93,7 @@ export interface MonacoEditorProps {
    *
    * Default is opening a new editor in a popup
    */
-  onEditorOpenRequest?: (model: monaco.editor.ITextModel, input: monaco.extra.IResourceEditorInput, source: monaco.editor.ICodeEditor, sideBySide?: boolean) => Promise<monaco.editor.ICodeEditor | null>
+  onEditorOpenRequest?: (model: monaco.editor.ITextModel, options: IEditorOptions | undefined, source: monaco.editor.ICodeEditor, sideBySide?: boolean) => Promise<monaco.editor.ICodeEditor | null>
 }
 
 function MonacoEditor ({
@@ -166,6 +167,7 @@ function MonacoEditor ({
       modelRef.current = undefined
       editorRef.current?.setModel(null)
     }
+    return undefined
   }, [monacoLanguage, modelUri, valueRef, lastSaveViewState, lastRestoreViewState])
 
   // Create editor
@@ -207,6 +209,7 @@ function MonacoEditor ({
         editor.dispose()
       }
     }
+    return undefined
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -260,6 +263,7 @@ function MonacoEditor ({
         monaco.editor.setModelMarkers(model, 'customMarkers', [])
       }
     }
+    return undefined
   }, [markers])
 
   // Call onChange callback
@@ -275,6 +279,7 @@ function MonacoEditor ({
         didChangeModelContentDisposable.dispose()
       }
     }
+    return undefined
   }, [onChange])
 
   useEffect(() => {
@@ -289,6 +294,7 @@ function MonacoEditor ({
         disposable.dispose()
       }
     }
+    return undefined
   }, [onEditorOpenRequest])
 
   // Compute height
