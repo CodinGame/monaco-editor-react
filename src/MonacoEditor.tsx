@@ -159,8 +159,11 @@ function MonacoEditor ({
       return () => {
         lastSaveViewState(editorRef.current!, model)
         if (existingModel == null) {
-          // Only dispose if we are the one that created the model
-          model.dispose()
+          // Only dispose if we are the one who created the model
+          setTimeout(() => {
+            // setTimeout is required until monaco 0.34 is released (https://github.com/TypeFox/monaco-languageclient/issues/387)
+            model.dispose()
+          })
         }
       }
     } else {
