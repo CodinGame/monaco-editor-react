@@ -4,6 +4,7 @@ module.exports = {
     es6: true
   },
   extends: [
-    '@codingame/eslint-config', '@codingame/eslint-config-react'
+    '@codingame/eslint-config',
+    '@codingame/eslint-config-react'
   ]
 }
