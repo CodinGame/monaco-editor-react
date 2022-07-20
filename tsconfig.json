@@ -5,7 +5,7 @@
     "declaration": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "./app",
+    "baseUrl": "./src",
     "isolatedModules": true,
     "jsx": "react",
     "lib": [

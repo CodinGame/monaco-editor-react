@@ -4,19 +4,7 @@ module.exports = {
     es6: true
   },
   extends: [
-    '@codingame', 'standard-jsx'
-  ],
-  parserOptions: {
-    ecmaFeatures: {
-      jsx: true
-    }
-  },
-  plugins: [
-    'react',
-    'react-hooks'
-  ],
-  rules: {
-    'react-hooks/exhaustive-deps': 'error',
-    'react-hooks/rules-of-hooks': 'error'
-  }
+    '@codingame/eslint-config',
+    '@codingame/eslint-config-react'
+  ]
 }
