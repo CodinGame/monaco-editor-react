@@ -2,7 +2,7 @@ import React, { ForwardedRef, forwardRef, ReactElement, useEffect, useMemo, useR
 import debounce from 'lodash.debounce'
 import { monaco, createEditor, getMonacoLanguage, updateEditorKeybindingsMode, registerEditorOpenHandler } from '@codingame/monaco-editor-wrapper'
 import { IEditorOptions } from 'vscode/service-override/modelEditor'
-import { useDeepMemo, useLastValueRef, useLastVersion, useThemeData, useUserConfiguration } from './hooks'
+import { useDeepMemo, useLastValueRef, useLastVersion, useThemeData } from './hooks'
 import './style'
 
 const STATUS_BAR_HEIGHT = 20
@@ -122,15 +122,13 @@ function MonacoEditor ({
   const statusBarRef = useRef<HTMLDivElement>(null)
   const monacoLanguage = useMemo(() => programmingLanguage != null ? getMonacoLanguage(programmingLanguage) : undefined, [programmingLanguage])
 
-  const userConfiguration = useUserConfiguration(monacoLanguage)
   const memoizedOptions = useDeepMemo(() => options, [options])
   const allOptions = useMemo<monaco.editor.IEditorOptions>(() => {
     return removeKeyBindingsManagedOptions({
-      ...userConfiguration,
       ...memoizedOptions,
       automaticLayout: true
     }, keyBindingsMode)
-  }, [memoizedOptions, userConfiguration, keyBindingsMode])
+  }, [memoizedOptions, keyBindingsMode])
 
   const modelUri = useMemo(() => {
     return fileUri != null ? monaco.Uri.parse(fileUri) : undefined
