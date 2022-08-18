@@ -94,6 +94,11 @@ export interface MonacoEditorProps {
    * Default is opening a new editor in a popup
    */
   onEditorOpenRequest?: (model: monaco.editor.ITextModel, options: IEditorOptions | undefined, source: monaco.editor.ICodeEditor, sideBySide?: boolean) => Promise<monaco.editor.ICodeEditor | null>
+
+  /**
+   * Dispose
+   */
+  disposeModels?: boolean
 }
 
 function MonacoEditor ({
@@ -109,7 +114,8 @@ function MonacoEditor ({
   markers,
   saveViewState = defaultSaveViewState,
   restoreViewState = defaultRestoreViewState,
-  onEditorOpenRequest
+  onEditorOpenRequest,
+  disposeModels = true
 }: MonacoEditorProps, ref: ForwardedRef<monaco.editor.IStandaloneCodeEditor>): ReactElement {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>()
   const modelRef = useRef<monaco.editor.ITextModel>()
@@ -155,6 +161,9 @@ function MonacoEditor ({
         lastRestoreViewState(editorRef.current, model)
       }
       return () => {
+        if (!disposeModels) {
+          return
+        }
         lastSaveViewState(editorRef.current!, model)
         if (existingModel == null) {
           // Only dispose if we are the one who created the model
@@ -166,7 +175,7 @@ function MonacoEditor ({
       editorRef.current?.setModel(null)
     }
     return undefined
-  }, [monacoLanguage, modelUri, valueRef, lastSaveViewState, lastRestoreViewState])
+  }, [monacoLanguage, modelUri, valueRef, lastSaveViewState, lastRestoreViewState, disposeModels])
 
   // Create editor
   useEffect(() => {
