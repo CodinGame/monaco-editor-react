@@ -1,24 +1,22 @@
 import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import deepEqual from 'deep-equal'
-import { getConfiguration, getThemeData, onConfigurationChanged, monaco } from '@codingame/monaco-editor-wrapper'
+import { getConfiguration, onConfigurationChanged, monaco } from '@codingame/monaco-editor-wrapper'
+import { StandaloneServices, IThemeService, IColorTheme } from 'vscode/services'
 
-const standaloneThemeService = monaco.extra.StandaloneServices.get(monaco.editor.IStandaloneThemeService)
-export function useThemeData (): monaco.extra.ColorThemeData | null {
-  const [themeName, setThemeName] = useState(standaloneThemeService.getColorTheme().themeName)
-  const updateTheme = (theme: monaco.editor.IColorTheme) => {
-    setThemeName((theme as monaco.editor.IStandaloneTheme).themeName)
-  }
+export function useColorTheme (): IColorTheme {
+  const themeService = useMemo(() => StandaloneServices.get(IThemeService), [])
+  const [theme, setTheme] = useState(themeService.getColorTheme())
   useEffect(() => {
-    const disposable = standaloneThemeService.onDidColorThemeChange(updateTheme)
-    updateTheme(standaloneThemeService.getColorTheme())
+    const disposable = themeService.onDidColorThemeChange(() => {
+      setTheme(themeService.getColorTheme())
+    })
+    setTheme(themeService.getColorTheme())
     return () => {
       disposable.dispose()
     }
-  }, [])
+  }, [themeService])
 
-  return useMemo(() => {
-    return getThemeData(themeName)
-  }, [themeName])
+  return theme
 }
 
 export function useUserConfiguration (programmingLanguageId?: string): Partial<monaco.editor.IEditorOptions> {
