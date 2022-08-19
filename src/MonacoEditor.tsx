@@ -96,7 +96,8 @@ export interface MonacoEditorProps {
   onEditorOpenRequest?: (model: monaco.editor.ITextModel, options: IEditorOptions | undefined, source: monaco.editor.ICodeEditor, sideBySide?: boolean) => Promise<monaco.editor.ICodeEditor | null>
 
   /**
-   * Dispose
+   * if true, the models created by the component will be disposed when they are no longer displayed in the editor
+   * if false, the models will be kept and re-used the next time the same uri is provided
    */
   disposeModels?: boolean
 }

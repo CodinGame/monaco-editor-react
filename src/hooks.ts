@@ -10,6 +10,8 @@ export function useColorTheme (): IColorTheme {
     const disposable = themeService.onDidColorThemeChange(() => {
       setTheme(themeService.getColorTheme())
     })
+    // Since useEffect is asynchronous, the theme may have changed between the initialization of state and now
+    // Let's update the state just in case
     setTheme(themeService.getColorTheme())
     return () => {
       disposable.dispose()
