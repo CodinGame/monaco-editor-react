@@ -2,7 +2,7 @@ import React, { ForwardedRef, forwardRef, ReactElement, useEffect, useMemo, useR
 import debounce from 'lodash.debounce'
 import { monaco, createEditor, getMonacoLanguage, updateEditorKeybindingsMode, registerEditorOpenHandler } from '@codingame/monaco-editor-wrapper'
 import { IEditorOptions } from 'vscode/service-override/modelEditor'
-import { useDeepMemo, useLastValueRef, useLastVersion, useThemeData } from './hooks'
+import { useDeepMemo, useLastValueRef, useLastVersion, useColorTheme } from './hooks'
 import './style'
 
 const STATUS_BAR_HEIGHT = 20
@@ -94,6 +94,12 @@ export interface MonacoEditorProps {
    * Default is opening a new editor in a popup
    */
   onEditorOpenRequest?: (model: monaco.editor.ITextModel, options: IEditorOptions | undefined, source: monaco.editor.ICodeEditor, sideBySide?: boolean) => Promise<monaco.editor.ICodeEditor | null>
+
+  /**
+   * if true, the models created by the component will be disposed when they are no longer displayed in the editor
+   * if false, the models will be kept and re-used the next time the same uri is provided
+   */
+  disposeModels?: boolean
 }
 
 function MonacoEditor ({
@@ -109,14 +115,15 @@ function MonacoEditor ({
   markers,
   saveViewState = defaultSaveViewState,
   restoreViewState = defaultRestoreViewState,
-  onEditorOpenRequest
+  onEditorOpenRequest,
+  disposeModels = true
 }: MonacoEditorProps, ref: ForwardedRef<monaco.editor.IStandaloneCodeEditor>): ReactElement {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>()
   const modelRef = useRef<monaco.editor.ITextModel>()
   const preventTriggerChangeEventRef = useRef<boolean>(false)
 
   const [height, setHeight] = useState<number | string>(requestedHeight !== 'auto' ? requestedHeight : 50)
-  const themeData = useThemeData()
+  const colorTheme = useColorTheme()
 
   const containerRef = useRef<HTMLDivElement>(null)
   const statusBarRef = useRef<HTMLDivElement>(null)
@@ -155,13 +162,13 @@ function MonacoEditor ({
         lastRestoreViewState(editorRef.current, model)
       }
       return () => {
+        if (!disposeModels) {
+          return
+        }
         lastSaveViewState(editorRef.current!, model)
         if (existingModel == null) {
           // Only dispose if we are the one who created the model
-          setTimeout(() => {
-            // setTimeout is required until monaco 0.34 is released (https://github.com/TypeFox/monaco-languageclient/issues/387)
-            model.dispose()
-          })
+          model.dispose()
         }
       }
     } else {
@@ -169,7 +176,7 @@ function MonacoEditor ({
       editorRef.current?.setModel(null)
     }
     return undefined
-  }, [monacoLanguage, modelUri, valueRef, lastSaveViewState, lastRestoreViewState])
+  }, [monacoLanguage, modelUri, valueRef, lastSaveViewState, lastRestoreViewState, disposeModels])
 
   // Create editor
   useEffect(() => {
@@ -325,11 +332,11 @@ function MonacoEditor ({
 
   const statusBarStyle = useMemo(() => {
     return {
-      backgroundColor: themeData?.getColor('statusBar.background')?.toString() ?? '#007ACC',
-      color: themeData?.getColor('statusBar.foreground')?.toString() ?? '#FFFFFF',
-      borderTop: `1px solid ${themeData?.getColor('statusBar.border')?.toString() ?? '#FFFFFF'}`
+      backgroundColor: colorTheme.getColor('statusBar.background')?.toString() ?? '#007ACC',
+      color: colorTheme.getColor('statusBar.foreground')?.toString() ?? '#FFFFFF',
+      borderTop: `1px solid ${colorTheme.getColor('statusBar.border')?.toString() ?? '#FFFFFF'}`
     }
-  }, [themeData])
+  }, [colorTheme])
 
   return (
     <div className='react-monaco-editor-react-container' style={{ height }}>

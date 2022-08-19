@@ -1,11 +1,11 @@
 import { loadLanguage, monaco, updateKeybindings, updateUserConfiguration } from '@codingame/monaco-editor-wrapper'
-import { useThemeData, useUserConfiguration } from './hooks'
+import { useColorTheme, useUserConfiguration } from './hooks'
 import MonacoEditor, { MonacoEditorProps } from './MonacoEditor'
 
 export default MonacoEditor
 export {
   monaco,
-  useThemeData,
+  useColorTheme,
   useUserConfiguration,
   updateKeybindings,
   updateUserConfiguration,
