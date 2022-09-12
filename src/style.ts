@@ -44,7 +44,7 @@ addStyle(`
 
 .react-monaco-editor-react-status-bar input {
   all: initial;
-  color: yellow;
+  color: inherit;
   outline: none;
   border: none;
   background: transparent;
