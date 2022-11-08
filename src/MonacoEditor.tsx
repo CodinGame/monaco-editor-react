@@ -147,10 +147,12 @@ function MonacoEditor ({
   const lastSaveViewState = useLastVersion(saveViewState)
   const lastRestoreViewState = useLastVersion(restoreViewState)
 
+  const hasValue = fixedCode != null
+
   // Create/Update model
   useEffect(() => {
-    const value = valueRef.current
-    if (modelUri != null || value != null) {
+    if (modelUri != null || hasValue) {
+      const value = valueRef.current
       const existingModel = modelUri != null ? monaco.editor.getModel(modelUri) : null
       const model = existingModel ?? monaco.editor.createModel(value!, monacoLanguage, modelUri)
       if (monacoLanguage != null && model.getLanguageId() !== monacoLanguage) {
@@ -176,7 +178,7 @@ function MonacoEditor ({
       editorRef.current?.setModel(null)
     }
     return undefined
-  }, [monacoLanguage, modelUri, valueRef, lastSaveViewState, lastRestoreViewState, disposeModels])
+  }, [monacoLanguage, modelUri, valueRef, lastSaveViewState, lastRestoreViewState, disposeModels, hasValue])
 
   // Create editor
   useEffect(() => {
