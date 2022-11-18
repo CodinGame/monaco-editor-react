@@ -231,20 +231,9 @@ function MonacoEditor ({
       if (fixedCode !== model.getValue()) {
         preventTriggerChangeEventRef.current = true
         console.debug('Replacing whole editor content')
-        if (editor.getOption(monaco.editor.EditorOption.readOnly)) {
-          model.setValue(fixedCode)
-        } else {
-          editor.pushUndoStop()
-          model.pushEditOperations(
-            [],
-            [{
-              range: model.getFullModelRange(),
-              text: fixedCode
-            }],
-            () => null
-          )
-          editor.pushUndoStop()
-        }
+        editor.pushUndoStop()
+        model.setValue(fixedCode)
+        editor.pushUndoStop()
         preventTriggerChangeEventRef.current = false
       }
     }
