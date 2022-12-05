@@ -24,9 +24,12 @@
     "lodash.debounce": "^4.0.8"
   },
   "devDependencies": {
+    "@codingame/commitlint-config-codingame": "^1.0.3",
     "@codingame/eslint-config": "^1.1.6",
     "@codingame/eslint-config-react": "^1.0.1",
+    "@codingame/semantic-release-config": "^1.0.3",
     "@codingame/tsconfig": "^1.1.0",
+    "@commitlint/cli": "^17.3.0",
     "@types/deep-equal": "^1.0.1",
     "@types/lodash.debounce": "^4.0.7",
     "@types/react": "17.0.40",
