@@ -27,12 +27,6 @@ addStyle(`
   min-height: 0;
 }
 
-.react-monaco-editor-react h1, .react-monaco-editor-react h2, .react-monaco-editor-react h3 {
-  /* For tooltips */
-  font-size: initial;
-  font-weight: initial;
-}
-
 .react-monaco-editor-react-status-bar {
   flex: none;
   display: none;
