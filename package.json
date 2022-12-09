@@ -27,7 +27,7 @@
     "@codingame/commitlint-config-codingame": "^1.0.3",
     "@codingame/eslint-config": "^1.1.6",
     "@codingame/eslint-config-react": "^1.0.1",
-    "@codingame/semantic-release-config": "^1.0.3",
+    "@codingame/semantic-release-rules": "^1.0.0",
     "@codingame/tsconfig": "^1.1.0",
     "@commitlint/cli": "^17.3.0",
     "@types/deep-equal": "^1.0.1",
