@@ -268,10 +268,19 @@ function MonacoEditor ({
   // Call onChange callback
   useEffect(() => {
     if (onChange != null) {
+      // Sometimes, monaco calls the didChangeModelContent multiple times in a row
+      // (For instance, after an autocomplete with some additionalTextEdits - used by the typescript language server)
+      // The onChange prop is very probably used to store the current code in a state somewhere
+      // Updating that state 2 times in a row will trigger 2 asynchronous renders
+      // The first render will use the state after the first model content change, while the monaco model is already up to date with the last change
+      // It will then produce a desync and this component will force overwrite the editor content to sync it back
+      // Doing so produces at least 2 issues: the cursor is moved to the begining of the file by monaco and the undo stack is lost
+      // So a solution is to debounce the onChange callback so it's called only once in that case
+      const debouncedOnChange = debounce(onChange, 0)
       const editor = editorRef.current!
       const didChangeModelContentDisposable = editor.onDidChangeModelContent(event => {
         if (!preventTriggerChangeEventRef.current) {
-          onChange(editor.getValue(), event)
+          debouncedOnChange(editor.getValue(), event)
         }
       })
       return () => {
