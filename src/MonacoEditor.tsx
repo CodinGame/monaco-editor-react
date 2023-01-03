@@ -170,6 +170,7 @@ function MonacoEditor ({
         lastSaveViewState(editorRef.current!, model)
         if (existingModel == null) {
           // Only dispose if we are the one who created the model
+          modelRef.current = undefined
           model.dispose()
         }
       }
@@ -216,6 +217,7 @@ function MonacoEditor ({
       }
 
       return () => {
+        editorRef.current = undefined
         editor.dispose()
       }
     }
