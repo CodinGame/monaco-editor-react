@@ -217,6 +217,12 @@ function MonacoEditor ({
 
       return () => {
         editor.dispose()
+
+        // Ugly fix to prevent a double editor when used with React StrictMode, which unmounts & re-mounts the component,
+        // and for some reason the 1st editor is not disposed properly.
+        setTimeout(() => {
+          editor.dispose();
+        }, 0)
       }
     }
     return undefined
