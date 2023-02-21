@@ -2,7 +2,7 @@ import React, { ForwardedRef, forwardRef, ReactElement, useEffect, useMemo, useR
 import debounce from 'lodash.debounce'
 import { monaco, createEditor, getMonacoLanguage, updateEditorKeybindingsMode, registerEditorOpenHandler } from '@codingame/monaco-editor-wrapper'
 import { IEditorOptions } from 'vscode/service-override/modelEditor'
-import { useDeepMemo, useLastValueRef, useLastVersion, useColorTheme } from './hooks'
+import { useDeepMemo, useLastValueRef, useLastVersion, useThemeColors } from './hooks'
 import './style'
 
 const STATUS_BAR_HEIGHT = 20
@@ -123,7 +123,7 @@ function MonacoEditor ({
   const preventTriggerChangeEventRef = useRef<boolean>(false)
 
   const [height, setHeight] = useState<number | string>(requestedHeight !== 'auto' ? requestedHeight : 50)
-  const colorTheme = useColorTheme()
+  const [statusBarBackground, statusBarForeground, statusBarBorder] = useThemeColors(['statusBar.background', 'statusBar.foreground', 'statusBar.border'])
 
   const containerRef = useRef<HTMLDivElement>(null)
   const statusBarRef = useRef<HTMLDivElement>(null)
@@ -334,11 +334,11 @@ function MonacoEditor ({
 
   const statusBarStyle = useMemo(() => {
     return {
-      backgroundColor: colorTheme.getColor('statusBar.background')?.toString() ?? '#007ACC',
-      color: colorTheme.getColor('statusBar.foreground')?.toString() ?? '#FFFFFF',
-      borderTop: `1px solid ${colorTheme.getColor('statusBar.border')?.toString() ?? '#FFFFFF'}`
+      backgroundColor: statusBarBackground ?? '#007ACC',
+      color: statusBarForeground ?? '#FFFFFF',
+      borderTop: `1px solid ${statusBarBorder ?? '#FFFFFF'}`
     }
-  }, [colorTheme])
+  }, [statusBarBackground, statusBarBorder, statusBarForeground])
 
   return (
     <div className='react-monaco-editor-react-container' style={{ height }}>
