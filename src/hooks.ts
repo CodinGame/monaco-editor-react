@@ -1,24 +1,28 @@
-import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { MutableRefObject, useCallback, useEffect, useRef, useState } from 'react'
 import deepEqual from 'deep-equal'
 import { getConfiguration, onConfigurationChanged, monaco } from '@codingame/monaco-editor-wrapper'
-import { StandaloneServices, IThemeService, IColorTheme } from 'vscode/services'
+import { StandaloneServices, IThemeService } from 'vscode/services'
 
-export function useColorTheme (): IColorTheme {
-  const themeService = useMemo(() => StandaloneServices.get(IThemeService), [])
-  const [theme, setTheme] = useState(themeService.getColorTheme())
+function getCurrentThemeColor (color: string): string | undefined {
+  const themeService = StandaloneServices.get(IThemeService)
+  return themeService.getColorTheme().getColor(color)?.toString()
+}
+
+export function useThemeColors (colors: string[]): (string | undefined)[] {
+  const [colorValues, setColorValues] = useState(colors.map(getCurrentThemeColor))
   useEffect(() => {
-    const disposable = themeService.onDidColorThemeChange(() => {
-      setTheme(themeService.getColorTheme())
+    const disposable = StandaloneServices.get(IThemeService).onDidColorThemeChange(() => {
+      setColorValues(colors.map(getCurrentThemeColor))
     })
     // Since useEffect is asynchronous, the theme may have changed between the initialization of state and now
     // Let's update the state just in case
-    setTheme(themeService.getColorTheme())
+    setColorValues(colors.map(getCurrentThemeColor))
     return () => {
       disposable.dispose()
     }
-  }, [themeService])
+  }, [colors])
 
-  return theme
+  return colorValues
 }
 
 export function useUserConfiguration (programmingLanguageId?: string): Partial<monaco.editor.IEditorOptions> {
