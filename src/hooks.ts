@@ -8,21 +8,21 @@ function getCurrentThemeColor (color: string): string | undefined {
   return themeService.getColorTheme().getColor(color)?.toString()
 }
 
-export function useThemeColors (colors: string[]): (string | undefined)[] {
-  const [colorValues, setColorValues] = useState(colors.map(getCurrentThemeColor))
+export function useThemeColor (color: string): string | undefined {
+  const [colorValue, setColorValue] = useState(getCurrentThemeColor(color))
   useEffect(() => {
     const disposable = StandaloneServices.get(IThemeService).onDidColorThemeChange(() => {
-      setColorValues(colors.map(getCurrentThemeColor))
+      setColorValue(getCurrentThemeColor(color))
     })
     // Since useEffect is asynchronous, the theme may have changed between the initialization of state and now
     // Let's update the state just in case
-    setColorValues(colors.map(getCurrentThemeColor))
+    setColorValue(getCurrentThemeColor(color))
     return () => {
       disposable.dispose()
     }
-  }, [colors])
+  }, [color])
 
-  return colorValues
+  return colorValue
 }
 
 export function useUserConfiguration (programmingLanguageId?: string): Partial<monaco.editor.IEditorOptions> {
