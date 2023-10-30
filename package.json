@@ -19,38 +19,44 @@
   ],
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@codingame/monaco-editor-wrapper": "^3.9.0",
-    "deep-equal": "^2.2.0",
-    "lodash.debounce": "^4.0.8"
+    "@codingame/monaco-editor-wrapper": "4.0.0",
+    "deep-equal": "^2.2.3",
+    "lodash.debounce": "^4.0.8",
+    "monaco-editor": "npm:@codingame/monaco-vscode-editor-api@~2.0.2",
+    "react-dom": "^18.2.0",
+    "uuid": "^9.0.1",
+    "vscode": "npm:@codingame/monaco-vscode-api@~2.0.2"
   },
   "devDependencies": {
-    "@codingame/commitlint-config-codingame": "^1.0.5",
-    "@codingame/eslint-config": "^1.1.6",
+    "@codingame/commitlint-config-codingame": "^1.0.7",
+    "@codingame/eslint-config": "^1.1.10",
     "@codingame/eslint-config-react": "^1.0.2",
-    "@codingame/semantic-release-config": "^1.2.0",
+    "@codingame/semantic-release-config": "^1.3.5",
     "@codingame/tsconfig": "^1.1.1",
-    "@commitlint/cli": "^17.4.4",
-    "@types/deep-equal": "^1.0.1",
-    "@types/lodash.debounce": "^4.0.7",
-    "@types/react": "17.0.40",
-    "@typescript-eslint/eslint-plugin": "5.53.0",
-    "@typescript-eslint/parser": "5.53.0",
-    "conventional-changelog-conventionalcommits": "^5.0.0",
-    "eslint": "8.34.0",
-    "eslint-config-standard": "17.0.0",
+    "@commitlint/cli": "^18.6.0",
+    "@types/deep-equal": "^1.0.4",
+    "@types/lodash.debounce": "^4.0.9",
+    "@types/react": "18.2.51",
+    "@types/react-dom": "^18.2.18",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "6.20.0",
+    "@typescript-eslint/parser": "6.20.0",
+    "conventional-changelog-conventionalcommits": "^7.0.2",
+    "eslint": "8.56.0",
+    "eslint-config-standard": "17.1.0",
     "eslint-config-standard-jsx": "11.0.0",
-    "eslint-plugin-import": "2.27.5",
+    "eslint-plugin-import": "2.29.1",
     "eslint-plugin-node": "11.1.0",
-    "eslint-plugin-react": "7.32.2",
+    "eslint-plugin-react": "7.33.2",
     "eslint-plugin-react-hooks": "4.6.0",
-    "eslint-plugin-unused-imports": "2.0.0",
-    "typescript": "4.9.5"
+    "eslint-plugin-unused-imports": "3.0.0",
+    "typescript": "5.3.3"
   },
   "peerDependencies": {
     "react": ">=16.0.0"
   },
   "volta": {
-    "node": "16.14.0",
-    "npm": "8.5.0"
+    "node": "20.10.0",
+    "npm": "10.4.0"
   }
 }
