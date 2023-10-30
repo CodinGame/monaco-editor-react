@@ -14,6 +14,22 @@
   "moduleResolution": "node",
   "main": "dist/index.js",
   "module": "dist/index.js",
+  "exports": {
+    ".": {
+      "default": "./dist/index.js"
+    },
+    "./vscodeParts": {
+      "types": "./dist/vscodeParts.d.ts",
+      "default": "./dist/vscodeParts.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "vscodeParts": [
+        "./dist/vscodeParts.d.ts"
+      ]
+    }
+  },
   "files": [
     "dist/"
   ],
