@@ -38,10 +38,10 @@
     "@codingame/monaco-editor-wrapper": "4.0.0-monaco-update.2",
     "deep-equal": "^2.2.3",
     "lodash.debounce": "^4.0.8",
+    "monaco-editor": "npm:@codingame/monaco-vscode-editor-api@~2.0.0",
     "react-dom": "^18.2.0",
     "uuid": "^9.0.1",
-    "vscode": "npm:@codingame/monaco-vscode-api@~2.0.0",
-    "monaco-editor": "npm:@codingame/monaco-vscode-editor-api@~2.0.0"
+    "vscode": "npm:@codingame/monaco-vscode-api@~2.0.0"
   },
   "devDependencies": {
     "@codingame/commitlint-config-codingame": "^1.0.7",
@@ -54,6 +54,7 @@
     "@types/lodash.debounce": "^4.0.9",
     "@types/react": "18.2.48",
     "@types/react-dom": "^18.2.18",
+    "@types/vscode": "^1.85.0",
     "@typescript-eslint/eslint-plugin": "6.19.1",
     "@typescript-eslint/parser": "6.19.1",
     "conventional-changelog-conventionalcommits": "^7.0.2",
