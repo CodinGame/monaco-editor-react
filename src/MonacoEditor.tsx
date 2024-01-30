@@ -156,6 +156,8 @@ function MonacoEditor ({
         containerElement,
         {
           automaticLayout: true,
+          // We need to pass options here for the `scrollbar` options to be used
+          ...allOptions,
           // We need to override all IStandaloneEditorConstructionOptions fields to prevent conflicts with proper editor options (especially `language`)
           value: undefined,
           language: undefined,
