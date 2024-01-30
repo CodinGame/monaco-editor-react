@@ -202,10 +202,12 @@ function MonacoEditor ({
       setModelReady(false)
 
       const value = valueRef.current
+      let modelIRefPromise: Promise<IReference<ITextFileEditorModel>> | undefined
       let modelIRef: IReference<ITextFileEditorModel> | undefined
       let model: monaco.editor.ITextModel
       if (fileUri != null) {
-        modelIRef = await createModelReference(monaco.Uri.parse(fileUri), value!)
+        modelIRefPromise = createModelReference(monaco.Uri.parse(fileUri), value!)
+        modelIRef = (await modelIRefPromise)!
         if (cancelled) {
           modelIRef.dispose()
           return () => {}
@@ -228,6 +230,7 @@ function MonacoEditor ({
         if (editorRef.current != null) {
           lastSaveViewState(editorRef.current, model)
         }
+        modelIRefPromise?.then(modelIRef => modelIRef.dispose(), console.error)
         modelRef.current = undefined
       }
     }
