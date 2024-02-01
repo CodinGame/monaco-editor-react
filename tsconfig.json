@@ -1,12 +1,11 @@
 {
   "extends": "@codingame/tsconfig",
   "compilerOptions": {
+    "strict": true,
     "outDir": "dist/",
     "declaration": true,
-    "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": "./src",
-    "isolatedModules": true,
     "jsx": "react",
     "lib": [
       "dom",

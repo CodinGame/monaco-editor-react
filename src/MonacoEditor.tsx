@@ -1,7 +1,9 @@
 import React, { ForwardedRef, forwardRef, ReactElement, useEffect, useMemo, useRef, useState } from 'react'
 import debounce from 'lodash.debounce'
-import { monaco, createEditor, getMonacoLanguage, updateEditorKeybindingsMode, registerEditorOpenHandler } from '@codingame/monaco-editor-wrapper'
-import { IEditorOptions } from 'vscode/service-override/modelEditor'
+import * as monaco from 'monaco-editor'
+import { createEditor, getMonacoLanguage, updateEditorKeybindingsMode, registerEditorOpenHandler, createModelReference } from '@codingame/monaco-editor-wrapper'
+import { IEditorOptions, IResolvedTextEditorModel } from '@codingame/monaco-vscode-editor-service-override'
+import { IReference, ITextFileEditorModel } from 'vscode/monaco'
 import { useDeepMemo, useLastValueRef, useLastVersion, useThemeColor } from './hooks'
 import './style'
 
@@ -93,7 +95,7 @@ export interface MonacoEditorProps {
    *
    * Default is opening a new editor in a popup
    */
-  onEditorOpenRequest?: (model: monaco.editor.ITextModel, options: IEditorOptions | undefined, source: monaco.editor.ICodeEditor, sideBySide?: boolean) => Promise<monaco.editor.ICodeEditor | null>
+  onEditorOpenRequest?: (model: IReference<IResolvedTextEditorModel>, options: IEditorOptions | undefined, source: monaco.editor.ICodeEditor, sideBySide?: boolean) => Promise<monaco.editor.ICodeEditor | null>
 
   /**
    * if true, the models created by the component will be disposed when they are no longer displayed in the editor
@@ -115,11 +117,11 @@ function MonacoEditor ({
   markers,
   saveViewState = defaultSaveViewState,
   restoreViewState = defaultRestoreViewState,
-  onEditorOpenRequest,
-  disposeModels = true
+  onEditorOpenRequest
 }: MonacoEditorProps, ref: ForwardedRef<monaco.editor.IStandaloneCodeEditor>): ReactElement {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>()
   const modelRef = useRef<monaco.editor.ITextModel>()
+  const [modelReady, setModelReady] = useState(false)
   const preventTriggerChangeEventRef = useRef<boolean>(false)
 
   const [height, setHeight] = useState<number | string>(requestedHeight !== 'auto' ? requestedHeight : 50)
@@ -134,14 +136,9 @@ function MonacoEditor ({
   const memoizedOptions = useDeepMemo(() => options, [options])
   const allOptions = useMemo<monaco.editor.IEditorOptions>(() => {
     return removeKeyBindingsManagedOptions({
-      ...memoizedOptions,
-      automaticLayout: true
+      ...memoizedOptions
     }, keyBindingsMode)
   }, [memoizedOptions, keyBindingsMode])
-
-  const modelUri = useMemo(() => {
-    return fileUri != null ? monaco.Uri.parse(fileUri) : undefined
-  }, [fileUri])
 
   const fixedCode = useMemo(() => value != null ? fixCode(value) : null, [value])
 
@@ -151,48 +148,15 @@ function MonacoEditor ({
 
   const hasValue = fixedCode != null
 
-  // Create/Update model
-  useEffect(() => {
-    if (modelUri != null || hasValue) {
-      const value = valueRef.current
-      const existingModel = modelUri != null ? monaco.editor.getModel(modelUri) : null
-      const model = existingModel ?? monaco.editor.createModel(value!, monacoLanguage, modelUri)
-      if (monacoLanguage != null && model.getLanguageId() !== monacoLanguage) {
-        monaco.editor.setModelLanguage(model, monacoLanguage)
-      }
-      modelRef.current = model
-      editorRef.current?.setModel(model)
-      if (editorRef.current != null) {
-        lastRestoreViewState(editorRef.current, model)
-      }
-      return () => {
-        if (!disposeModels) {
-          return
-        }
-        lastSaveViewState(editorRef.current!, model)
-        if (existingModel == null) {
-          // Only dispose if we are the one who created the model
-          modelRef.current = undefined
-          model.dispose()
-        }
-      }
-    } else {
-      modelRef.current = undefined
-      editorRef.current?.setModel(null)
-    }
-    return undefined
-  }, [monacoLanguage, modelUri, valueRef, lastSaveViewState, lastRestoreViewState, disposeModels, hasValue])
-
   // Create editor
   useEffect(() => {
     const containerElement = containerRef.current
     if (containerElement != null) {
-      const model = modelRef.current
       const editor = createEditor(
         containerElement,
         {
-          model,
-          // We need to pass options here due to https://github.com/microsoft/monaco-editor/issues/2873
+          automaticLayout: true,
+          // We need to pass options here for the `scrollbar` options to be used
           ...allOptions,
           // We need to override all IStandaloneEditorConstructionOptions fields to prevent conflicts with proper editor options (especially `language`)
           value: undefined,
@@ -206,9 +170,6 @@ function MonacoEditor ({
         }
       )
       editorRef.current = editor
-      if (model != null) {
-        lastRestoreViewState(editor, model)
-      }
 
       if (ref != null) {
         if (typeof ref === 'function') {
@@ -224,15 +185,68 @@ function MonacoEditor ({
       }
     }
     return undefined
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Create/Update model
+  useEffect(() => {
+    if (fileUri == null && !hasValue) {
+      modelRef.current = undefined
+      editorRef.current!.setModel(null)
+      return
+    }
+    let cancelled = false
+    async function updateModel () {
+      modelRef.current = undefined
+      editorRef.current!.setModel(null)
+      setModelReady(false)
+
+      const value = valueRef.current
+      let modelIRefPromise: Promise<IReference<ITextFileEditorModel>> | undefined
+      let modelIRef: IReference<ITextFileEditorModel> | undefined
+      let model: monaco.editor.ITextModel
+      if (fileUri != null) {
+        modelIRefPromise = createModelReference(monaco.Uri.parse(fileUri), value!)
+        modelIRef = (await modelIRefPromise)!
+        if (cancelled) {
+          modelIRef.dispose()
+          return () => {}
+        }
+        model = modelIRef.object.textEditorModel!
+        if (monacoLanguage != null && model.getLanguageId() !== monacoLanguage) {
+          monaco.editor.setModelLanguage(model, monacoLanguage)
+        }
+      } else {
+        model = monaco.editor.createModel(value!, monacoLanguage)
+      }
+
+      modelRef.current = model
+      setModelReady(true)
+      editorRef.current!.setModel(model)
+      if (editorRef.current != null) {
+        lastRestoreViewState(editorRef.current, model)
+      }
+      return () => {
+        if (editorRef.current != null) {
+          lastSaveViewState(editorRef.current, model)
+        }
+        modelIRefPromise?.then(modelIRef => modelIRef.dispose(), console.error)
+        modelRef.current = undefined
+      }
+    }
+    const disposePromise = updateModel()
+    return () => {
+      cancelled = true
+      disposePromise.then(dispose => dispose(), console.error)
+    }
+  }, [monacoLanguage, fileUri, valueRef, lastSaveViewState, lastRestoreViewState, hasValue])
 
   // Update value
   useEffect(() => {
-    if (fixedCode != null) {
-      const model = modelRef.current!
+    if (modelReady && fixedCode != null) {
+      const model = modelRef.current
       const editor = editorRef.current!
-      if (fixedCode !== model.getValue()) {
+      if (model != null && fixedCode !== model.getValue()) {
         preventTriggerChangeEventRef.current = true
         console.debug('Replacing whole editor content')
         editor.pushUndoStop()
@@ -241,7 +255,7 @@ function MonacoEditor ({
         preventTriggerChangeEventRef.current = false
       }
     }
-  }, [fixedCode])
+  }, [fixedCode, modelReady])
 
   // Update options from props
   useEffect(() => {
@@ -259,6 +273,9 @@ function MonacoEditor ({
 
   // Update markers
   useEffect(() => {
+    if (!modelReady) {
+      return
+    }
     const model = modelRef.current
     if (markers != null && model != null) {
       monaco.editor.setModelMarkers(model, 'customMarkers', markers)
@@ -267,7 +284,7 @@ function MonacoEditor ({
       }
     }
     return undefined
-  }, [markers])
+  }, [markers, modelReady])
 
   // Call onChange callback
   useEffect(() => {
