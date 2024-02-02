@@ -3,7 +3,8 @@ import debounce from 'lodash.debounce'
 import * as monaco from 'monaco-editor'
 import { createEditor, getMonacoLanguage, updateEditorKeybindingsMode, registerEditorOpenHandler, createModelReference } from '@codingame/monaco-editor-wrapper'
 import { IEditorOptions, IResolvedTextEditorModel } from '@codingame/monaco-vscode-editor-service-override'
-import { IReference, ITextFileEditorModel } from 'vscode/monaco'
+import { DisposableStore, IReference, ITextFileEditorModel } from 'vscode/monaco'
+import type { ITextFileEditorModelSaveEvent } from 'vscode/vscode/vs/workbench/services/textfile/common/textfiles'
 import { useDeepMemo, useLastValueRef, useLastVersion, useThemeColor } from './hooks'
 import './style'
 
@@ -53,6 +54,8 @@ export function defaultSaveViewState (editor: monaco.editor.IStandaloneCodeEdito
     viewStates.delete(key)
   }
 }
+function defaultOnDidSave () {
+}
 
 export interface MonacoEditorProps {
   /**
@@ -75,6 +78,7 @@ export interface MonacoEditorProps {
   fileUri?: string
   options?: monaco.editor.IStandaloneEditorConstructionOptions
   onChange?: (value: string, event: monaco.editor.IModelContentChangedEvent) => void
+  onDidSave?: (event: ITextFileEditorModelSaveEvent) => void
   markers?: monaco.editor.IMarkerData[]
   keyBindingsMode?: KeyBindingsMode
   /**
@@ -117,7 +121,8 @@ function MonacoEditor ({
   markers,
   saveViewState = defaultSaveViewState,
   restoreViewState = defaultRestoreViewState,
-  onEditorOpenRequest
+  onEditorOpenRequest,
+  onDidSave = defaultOnDidSave
 }: MonacoEditorProps, ref: ForwardedRef<monaco.editor.IStandaloneCodeEditor>): ReactElement {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>()
   const modelRef = useRef<monaco.editor.ITextModel>()
@@ -145,6 +150,7 @@ function MonacoEditor ({
   const valueRef = useLastValueRef(fixedCode)
   const lastSaveViewState = useLastVersion(saveViewState)
   const lastRestoreViewState = useLastVersion(restoreViewState)
+  const lastOnDidSave = useLastVersion(onDidSave)
 
   const hasValue = fixedCode != null
 
@@ -202,16 +208,22 @@ function MonacoEditor ({
       setModelReady(false)
 
       const value = valueRef.current
-      let modelIRefPromise: Promise<IReference<ITextFileEditorModel>> | undefined
       let modelIRef: IReference<ITextFileEditorModel> | undefined
       let model: monaco.editor.ITextModel
+      const disposableStore = new DisposableStore()
       if (fileUri != null) {
-        modelIRefPromise = createModelReference(monaco.Uri.parse(fileUri), value!)
+        const modelIRefPromise = createModelReference(monaco.Uri.parse(fileUri), value!)
+        disposableStore.add({
+          dispose () {
+            void modelIRefPromise.then(modelIRef => modelIRef.dispose(), console.error)
+          }
+        })
         modelIRef = (await modelIRefPromise)!
         if (cancelled) {
           modelIRef.dispose()
           return () => {}
         }
+        disposableStore.add(modelIRef.object.onDidSave(lastOnDidSave))
         model = modelIRef.object.textEditorModel!
         if (monacoLanguage != null && model.getLanguageId() !== monacoLanguage) {
           monaco.editor.setModelLanguage(model, monacoLanguage)
@@ -230,7 +242,7 @@ function MonacoEditor ({
         if (editorRef.current != null) {
           lastSaveViewState(editorRef.current, model)
         }
-        modelIRefPromise?.then(modelIRef => modelIRef.dispose(), console.error)
+        disposableStore.dispose()
         modelRef.current = undefined
       }
     }
@@ -239,7 +251,7 @@ function MonacoEditor ({
       cancelled = true
       disposePromise.then(dispose => dispose(), console.error)
     }
-  }, [monacoLanguage, fileUri, valueRef, lastSaveViewState, lastRestoreViewState, hasValue])
+  }, [monacoLanguage, fileUri, valueRef, lastSaveViewState, lastRestoreViewState, hasValue, lastOnDidSave])
 
   // Update value
   useEffect(() => {
