@@ -22,7 +22,7 @@
     "sourceMap": true,
     "target": "ES2022"
   },
-  "include": ["src"],
+  "include": ["src", ".eslintrc.cjs"],
   "exclude": [
     "dist",
     "node_modules"

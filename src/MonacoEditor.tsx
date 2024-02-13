@@ -5,8 +5,8 @@ import { createEditor, getMonacoLanguage, updateEditorKeybindingsMode, registerE
 import { IEditorOptions, IResolvedTextEditorModel } from '@codingame/monaco-vscode-editor-service-override'
 import { DisposableStore, IReference, ITextFileEditorModel } from 'vscode/monaco'
 import type { ITextFileEditorModelSaveEvent } from 'vscode/vscode/vs/workbench/services/textfile/common/textfiles'
-import { useDeepMemo, useLastValueRef, useLastVersion, useThemeColor } from './hooks'
-import './style'
+import { useDeepMemo, useLastValueRef, useLastVersion, useThemeColor } from './hooks.js'
+import './style.js'
 
 const STATUS_BAR_HEIGHT = 20
 
