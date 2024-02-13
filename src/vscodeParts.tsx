@@ -25,7 +25,9 @@ function createPart (part: Parts, location: ViewContainerLocation | null) {
 
   initializePromise.then(() => {
     attachPart(part, element)
-  }, console.error)
+  }, () => {
+    // ignore, probably part not registered
+  })
 
   let counter = 0
 
