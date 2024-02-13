@@ -1,6 +1,6 @@
 import React, { Fragment, ReactNode, useEffect, useRef, useState } from 'react'
 import * as monaco from 'monaco-editor'
-import { renderSidebarPart, renderActivitybarPar, renderEditorPart, renderPanelPart, renderStatusBarPart, registerCustomView, ViewContainerLocation, CustomViewOption } from '@codingame/monaco-vscode-views-service-override/views'
+import { attachPart, Parts, onPartVisibilityChange, registerCustomView, ViewContainerLocation, CustomViewOption, isPartVisibile } from '@codingame/monaco-vscode-views-service-override/views'
 import { createPortal } from 'react-dom'
 import { initializePromise } from '@codingame/monaco-editor-wrapper'
 import { DisposableStore } from 'vscode/monaco'
@@ -12,19 +12,19 @@ interface CustomView extends Omit<CustomViewOption, 'renderBody' | 'location' | 
   })[]
 }
 
-interface VscodePartRendererProps {
+export interface VscodePartRendererProps {
   views?: CustomView[]
   className?: string
   style?: React.CSSProperties
 }
 
-function createPart (location: ViewContainerLocation | null, renderPart: (container: HTMLElement) => monaco.IDisposable) {
+function createPart (part: Parts, location: ViewContainerLocation | null) {
   const element = document.createElement('div')
   element.style.flex = '1'
   element.style.minWidth = '0'
 
   initializePromise.then(() => {
-    renderPart(element)
+    attachPart(part, element)
   }, console.error)
 
   let counter = 0
@@ -45,6 +45,15 @@ function createPart (location: ViewContainerLocation | null, renderPart: (contai
     const [renderCounter] = useState(() => counter++)
 
     const [portalComponents, setPortalComponents] = useState({} as Record<string, HTMLElement>)
+
+    const [visible, setVisible] = useState(isPartVisibile(part))
+
+    useEffect(() => {
+      const disposable = onPartVisibilityChange(part, setVisible)
+      return () => {
+        disposable.dispose()
+      }
+    }, [])
 
     useEffect(() => {
       if (location == null) {
@@ -126,7 +135,7 @@ function createPart (location: ViewContainerLocation | null, renderPart: (contai
         })}
         <div
           ref={ref} className={className} style={{
-            display: 'flex',
+            display: visible ? 'flex' : 'none',
             alignItems: 'stretch',
             justifyContent: 'stretch',
             ...style
@@ -137,10 +146,11 @@ function createPart (location: ViewContainerLocation | null, renderPart: (contai
   }
 }
 
-export const SidebarPart = createPart(ViewContainerLocation.Sidebar, renderSidebarPart)
-export const ActivitybarPart = createPart(null, renderActivitybarPar)
-export const EditorPart = createPart(null, renderEditorPart)
-export const StatusBarPart = createPart(null, renderStatusBarPart)
-export const PanelPart = createPart(ViewContainerLocation.Panel, renderPanelPart)
+export const SidebarPart = createPart(Parts.SIDEBAR_PART, ViewContainerLocation.Sidebar)
+export const ActivitybarPart = createPart(Parts.ACTIVITYBAR_PART, null)
+export const EditorPart = createPart(Parts.EDITOR_PART, null)
+export const StatusBarPart = createPart(Parts.STATUSBAR_PART, null)
+export const PanelPart = createPart(Parts.PANEL_PART, ViewContainerLocation.Panel)
+export const AuxiliaryPart = createPart(Parts.AUXILIARYBAR_PART, ViewContainerLocation.AuxiliaryBar)
 
 export type { CustomView }
