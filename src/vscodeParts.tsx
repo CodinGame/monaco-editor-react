@@ -152,5 +152,7 @@ export const EditorPart = createPart(Parts.EDITOR_PART, null)
 export const StatusBarPart = createPart(Parts.STATUSBAR_PART, null)
 export const PanelPart = createPart(Parts.PANEL_PART, ViewContainerLocation.Panel)
 export const AuxiliaryPart = createPart(Parts.AUXILIARYBAR_PART, ViewContainerLocation.AuxiliaryBar)
+export const TitlebarPart = createPart(Parts.TITLEBAR_PART, null)
+export const BannerPart = createPart(Parts.BANNER_PART, null)
 
 export type { CustomView }
