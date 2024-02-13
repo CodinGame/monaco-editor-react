@@ -1,6 +1,6 @@
 import React, { Fragment, ReactNode, useEffect, useRef, useState } from 'react'
 import * as monaco from 'monaco-editor'
-import { attachPart, Parts, onPartVisibilityChange, registerCustomView, ViewContainerLocation, CustomViewOption, isPartVisibile } from '@codingame/monaco-vscode-views-service-override/views'
+import { attachPart, Parts, onPartVisibilityChange, registerCustomView, ViewContainerLocation, CustomViewOption, isPartVisibile } from '@codingame/monaco-vscode-views-service-override'
 import { createPortal } from 'react-dom'
 import { initializePromise } from '@codingame/monaco-editor-wrapper'
 import { DisposableStore } from 'vscode/monaco'
