@@ -6,5 +6,11 @@ module.exports = {
   extends: [
     '@codingame/eslint-config',
     '@codingame/eslint-config-react'
-  ]
+  ],
+  rules: {
+    'import/extensions': [
+      'error',
+      'ignorePackages'
+    ]
+  }
 }
