@@ -23,11 +23,11 @@ function createPart (part: Parts, location: ViewContainerLocation | null) {
   element.style.flex = '1'
   element.style.minWidth = '0'
 
-  initializePromise.then(() => {
-    attachPart(part, element)
-  }, () => {
-    // ignore, probably part not registered
-  })
+  initializePromise
+    .then(() => attachPart(part, element))
+    .catch(() => {
+      // ignore, probably part not registered
+    })
 
   let counter = 0
 
