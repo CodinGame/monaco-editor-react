@@ -1,10 +1,11 @@
 import React, { ForwardedRef, forwardRef, ReactElement, useEffect, useMemo, useRef, useState } from 'react'
 import debounce from 'lodash.debounce'
 import * as monaco from 'monaco-editor'
-import { createEditor, getMonacoLanguage, updateEditorKeybindingsMode, registerEditorOpenHandler, createModelReference } from '@codingame/monaco-editor-wrapper'
+import { createEditor, getMonacoLanguage, updateEditorKeybindingsMode, registerEditorOpenHandler, createModelReference, registerFile } from '@codingame/monaco-editor-wrapper'
 import { IEditorOptions, IResolvedTextEditorModel } from '@codingame/monaco-vscode-editor-service-override'
 import { DisposableStore, IReference, ITextFileEditorModel } from 'vscode/monaco'
 import type { ITextFileEditorModelSaveEvent } from 'vscode/vscode/vs/workbench/services/textfile/common/textfiles'
+import { RegisteredMemoryFile } from '@codingame/monaco-vscode-files-service-override'
 import { useDeepMemo, useLastValueRef, useLastVersion, useThemeColor } from './hooks.js'
 import './style.js'
 
@@ -212,9 +213,14 @@ function MonacoEditor ({
       let model: monaco.editor.ITextModel
       const disposableStore = new DisposableStore()
       if (fileUri != null) {
-        const modelIRefPromise = createModelReference(monaco.Uri.parse(fileUri), value!)
+        const uri = monaco.Uri.parse(fileUri)
+
+        const fileDisposable = registerFile(new RegisteredMemoryFile(uri, value!))
+
+        const modelIRefPromise = createModelReference(uri)
         disposableStore.add({
           dispose () {
+            fileDisposable.dispose()
             void modelIRefPromise.then(modelIRef => modelIRef.dispose(), console.error)
           }
         })
