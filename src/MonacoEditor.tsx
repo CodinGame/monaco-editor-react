@@ -248,7 +248,6 @@ function MonacoEditor ({
           lastSaveViewState(editorRef.current, model)
         }
         disposableStore.dispose()
-        modelRef.current = undefined
       }
     }
     const disposePromise = updateModel()
