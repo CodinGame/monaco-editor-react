@@ -215,12 +215,11 @@ function MonacoEditor ({
       if (fileUri != null) {
         const uri = monaco.Uri.parse(fileUri)
 
-        const fileDisposable = registerFile(new RegisteredMemoryFile(uri, value!))
+        disposableStore.add(registerFile(new RegisteredMemoryFile(uri, value!)))
 
         const modelIRefPromise = createModelReference(uri)
         disposableStore.add({
           dispose () {
-            fileDisposable.dispose()
             void modelIRefPromise.then(modelIRef => modelIRef.dispose(), console.error)
           }
         })
@@ -249,7 +248,6 @@ function MonacoEditor ({
           lastSaveViewState(editorRef.current, model)
         }
         disposableStore.dispose()
-        modelRef.current = undefined
       }
     }
     const disposePromise = updateModel()
