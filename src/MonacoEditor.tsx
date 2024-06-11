@@ -202,8 +202,8 @@ function MonacoEditor ({
       editorRef.current!.setModel(null)
       return
     }
-    let cancelled = false
-    async function updateModel () {
+    const disposableStore = new DisposableStore()
+    async function updateModel (): Promise<void> {
       modelRef.current = undefined
       editorRef.current!.setModel(null)
       setModelReady(false)
@@ -211,7 +211,6 @@ function MonacoEditor ({
       const value = valueRef.current
       let modelIRef: IReference<ITextFileEditorModel> | undefined
       let model: monaco.editor.ITextModel
-      const disposableStore = new DisposableStore()
       if (fileUri != null) {
         const uri = monaco.Uri.parse(fileUri)
 
@@ -224,9 +223,8 @@ function MonacoEditor ({
           }
         })
         modelIRef = (await modelIRefPromise)!
-        if (cancelled) {
-          modelIRef.dispose()
-          return () => {}
+        if (disposableStore.isDisposed) {
+          return
         }
         disposableStore.add(modelIRef.object.onDidSave(lastOnDidSave))
         model = modelIRef.object.textEditorModel!
@@ -243,17 +241,17 @@ function MonacoEditor ({
       if (editorRef.current != null) {
         lastRestoreViewState(editorRef.current, model)
       }
-      return () => {
-        if (editorRef.current != null) {
-          lastSaveViewState(editorRef.current, model)
+      disposableStore.add({
+        dispose () {
+          if (editorRef.current != null) {
+            lastSaveViewState(editorRef.current, model)
+          }
         }
-        disposableStore.dispose()
-      }
+      })
     }
-    const disposePromise = updateModel()
+    updateModel().catch(console.error)
     return () => {
-      cancelled = true
-      disposePromise.then(dispose => dispose(), console.error)
+      disposableStore.dispose()
     }
   }, [monacoLanguage, fileUri, valueRef, lastSaveViewState, lastRestoreViewState, hasValue, lastOnDidSave])
 
