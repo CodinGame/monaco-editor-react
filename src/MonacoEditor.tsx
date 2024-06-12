@@ -233,6 +233,11 @@ function MonacoEditor ({
         }
       } else {
         model = monaco.editor.createModel(value!, monacoLanguage)
+        disposableStore.add({
+          dispose () {
+            model.dispose()
+          }
+        })
       }
 
       modelRef.current = model
