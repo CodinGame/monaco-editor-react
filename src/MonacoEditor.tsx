@@ -169,6 +169,7 @@ function MonacoEditor ({
           value: undefined,
           language: undefined,
           theme: undefined,
+          model: null,
           autoDetectHighContrast: undefined,
           accessibilityHelpUrl: undefined,
           ariaContainerElement: undefined,
