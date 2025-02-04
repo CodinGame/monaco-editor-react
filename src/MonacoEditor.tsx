@@ -125,8 +125,8 @@ function MonacoEditor ({
   onEditorOpenRequest,
   onDidSave = defaultOnDidSave
 }: MonacoEditorProps, ref: ForwardedRef<monaco.editor.IStandaloneCodeEditor>): ReactElement {
-  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>()
-  const modelRef = useRef<monaco.editor.ITextModel>()
+  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>(undefined)
+  const modelRef = useRef<monaco.editor.ITextModel>(undefined)
   const [modelReady, setModelReady] = useState(false)
   const preventTriggerChangeEventRef = useRef<boolean>(false)
 
@@ -193,7 +193,6 @@ function MonacoEditor ({
       }
     }
     return undefined
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Create/Update model
