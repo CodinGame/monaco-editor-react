@@ -1,5 +1,13 @@
-import { loadLanguage, monaco, updateKeybindings, updateUserConfiguration } from '@codingame/monaco-editor-wrapper'
-import { IEditorOptions, IResolvedTextEditorModel } from '@codingame/monaco-vscode-editor-service-override'
+import {
+  loadLanguage,
+  monaco,
+  updateKeybindings,
+  updateUserConfiguration
+} from '@codingame/monaco-editor-wrapper'
+import {
+  IEditorOptions,
+  IResolvedTextEditorModel
+} from '@codingame/monaco-vscode-editor-service-override'
 import type { IReference } from 'vscode/monaco'
 import { useThemeColor, useUserConfiguration } from './hooks.js'
 import MonacoEditor, { MonacoEditorProps } from './MonacoEditor.js'
@@ -13,9 +21,4 @@ export {
   updateUserConfiguration,
   loadLanguage
 }
-export type {
-  MonacoEditorProps,
-  IReference,
-  IEditorOptions,
-  IResolvedTextEditorModel
-}
+export type { MonacoEditorProps, IReference, IEditorOptions, IResolvedTextEditorModel }

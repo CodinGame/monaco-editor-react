@@ -3,12 +3,12 @@ import deepEqual from 'deep-equal'
 import { getConfiguration, onConfigurationChanged, monaco } from '@codingame/monaco-editor-wrapper'
 import { StandaloneServices, IThemeService } from 'vscode/services'
 
-function getCurrentThemeColor (color: string): string | undefined {
+function getCurrentThemeColor(color: string): string | undefined {
   const themeService = StandaloneServices.get(IThemeService)
   return themeService.getColorTheme().getColor(color)?.toString()
 }
 
-export function useThemeColor (color: string): string | undefined {
+export function useThemeColor(color: string): string | undefined {
   const [colorValue, setColorValue] = useState(getCurrentThemeColor(color))
   useEffect(() => {
     const disposable = StandaloneServices.get(IThemeService).onDidColorThemeChange(() => {
@@ -25,7 +25,9 @@ export function useThemeColor (color: string): string | undefined {
   return colorValue
 }
 
-export function useUserConfiguration (programmingLanguageId?: string): Partial<monaco.editor.IEditorOptions> {
+export function useUserConfiguration(
+  programmingLanguageId?: string
+): Partial<monaco.editor.IEditorOptions> {
   const [userConfiguration, setUserConfiguration] = useState(() => getConfiguration()!)
   useEffect(() => {
     const updateOptions = () => {
@@ -39,33 +41,36 @@ export function useUserConfiguration (programmingLanguageId?: string): Partial<m
   return userConfiguration
 }
 
-export function useLastValueRef<T> (value: T): MutableRefObject<T> {
+export function useLastValueRef<T>(value: T): MutableRefObject<T> {
   const ref = useRef<T>(value)
   ref.current = value
   return ref
 }
 
-export function useLastVersion<P extends unknown[], R> (func: (...args: P) => R): (...args: P) => R {
+export function useLastVersion<P extends unknown[], R>(func: (...args: P) => R): (...args: P) => R {
   const ref = useRef<(...args: P) => R>(func)
   useEffect(() => {
     ref.current = func
   }, [func])
   return useCallback((...args: P) => {
     return ref.current(...args)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 }
 
-export function usePrevious<T> (value: T): T | undefined {
-  const ref = useRef<T>()
+export function usePrevious<T>(value: T): T | undefined {
+  const ref = useRef<T>(undefined)
   useEffect(() => {
     ref.current = value
   }, [value])
   return ref.current
 }
 
-export function useDeepMemo<T, D extends unknown[]> (memoFn: () => T, deps: D, isEqual: (a: D, b: D) => boolean = deepEqual): T {
-  const ref = useRef<{ deps: D, value: T }>()
+export function useDeepMemo<T, D extends unknown[]>(
+  memoFn: () => T,
+  deps: D,
+  isEqual: (a: D, b: D) => boolean = deepEqual
+): T {
+  const ref = useRef<{ deps: D; value: T }>(undefined)
   if (ref.current == null || !isEqual(deps, ref.current.deps)) {
     ref.current = { deps, value: memoFn() }
   }
