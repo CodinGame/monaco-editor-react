@@ -1,7 +1,7 @@
 import { MutableRefObject, useCallback, useEffect, useRef, useState } from 'react'
 import deepEqual from 'deep-equal'
 import { getConfiguration, onConfigurationChanged, monaco } from '@codingame/monaco-editor-wrapper'
-import { StandaloneServices, IThemeService } from 'vscode/services'
+import { StandaloneServices, IThemeService } from '@codingame/monaco-vscode-api/services'
 
 function getCurrentThemeColor(color: string): string | undefined {
   const themeService = StandaloneServices.get(IThemeService)
