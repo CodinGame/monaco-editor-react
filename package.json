@@ -39,12 +39,12 @@
   ],
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@codingame/monaco-editor-wrapper": "^15.0.0",
+    "@codingame/monaco-editor-wrapper": "^16.0.0",
     "deep-equal": "^2.2.3",
     "lodash.debounce": "^4.0.8",
-    "monaco-editor": "npm:@codingame/monaco-vscode-editor-api@^17.0.0",
+    "monaco-editor": "npm:@codingame/monaco-vscode-editor-api@^18.0.0",
     "react-dom": "^18.3.1",
-    "vscode": "npm:@codingame/monaco-vscode-extension-api@^17.0.0"
+    "vscode": "npm:@codingame/monaco-vscode-extension-api@^18.0.0"
   },
   "devDependencies": {
     "@codingame/commitlint-config-codingame": "^1.1.1",
