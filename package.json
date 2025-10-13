@@ -39,12 +39,12 @@
   ],
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@codingame/monaco-editor-wrapper": "^19.0.0",
+    "@codingame/monaco-editor-wrapper": "^20.0.0",
     "deep-equal": "^2.2.3",
     "lodash.debounce": "^4.0.8",
-    "monaco-editor": "npm:@codingame/monaco-vscode-editor-api@^21.0.0",
+    "monaco-editor": "npm:@codingame/monaco-vscode-editor-api@^22.0.1",
     "react-dom": ">=18.3.1",
-    "vscode": "npm:@codingame/monaco-vscode-extension-api@^21.0.0"
+    "vscode": "npm:@codingame/monaco-vscode-extension-api@^22.0.1"
   },
   "devDependencies": {
     "@codingame/commitlint-config-codingame": "^1.1.1",
@@ -53,17 +53,17 @@
     "@commitlint/cli": "^19.8.1",
     "@types/deep-equal": "^1.0.4",
     "@types/lodash.debounce": "^4.0.9",
-    "@types/react": "19.1.13",
-    "@types/react-dom": "^19.1.9",
-    "@typescript-eslint/eslint-plugin": "8.43.0",
-    "@typescript-eslint/parser": "8.43.0",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "^19.2.1",
+    "@typescript-eslint/eslint-plugin": "8.46.0",
+    "@typescript-eslint/parser": "8.46.0",
     "conventional-changelog-conventionalcommits": "^9.1.0",
-    "eslint": "9.35.0",
+    "eslint": "9.37.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
     "prettier": "^3.6.2",
-    "typescript": "5.9.2",
-    "typescript-eslint": "^8.43.0"
+    "typescript": "5.9.3",
+    "typescript-eslint": "^8.46.0"
   },
   "peerDependencies": {
     "react": ">=16.0.0"
