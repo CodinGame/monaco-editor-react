@@ -16,6 +16,7 @@ export function useThemeColor(color: string): string | undefined {
     })
     // Since useEffect is asynchronous, the theme may have changed between the initialization of state and now
     // Let's update the state just in case
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setColorValue(getCurrentThemeColor(color))
     return () => {
       disposable.dispose()
@@ -43,6 +44,7 @@ export function useUserConfiguration(
 
 export function useLastValueRef<T>(value: T): MutableRefObject<T> {
   const ref = useRef<T>(value)
+  // eslint-disable-next-line react-hooks/refs
   ref.current = value
   return ref
 }
@@ -62,6 +64,7 @@ export function usePrevious<T>(value: T): T | undefined {
   useEffect(() => {
     ref.current = value
   }, [value])
+  // eslint-disable-next-line react-hooks/refs
   return ref.current
 }
 
@@ -71,9 +74,11 @@ export function useDeepMemo<T, D extends unknown[]>(
   isEqual: (a: D, b: D) => boolean = deepEqual
 ): T {
   const ref = useRef<{ deps: D; value: T }>(undefined)
+  // eslint-disable-next-line react-hooks/refs
   if (ref.current == null || !isEqual(deps, ref.current.deps)) {
     ref.current = { deps, value: memoFn() }
   }
 
+  // eslint-disable-next-line react-hooks/refs
   return ref.current.value
 }
