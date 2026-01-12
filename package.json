@@ -43,7 +43,7 @@
     "deep-equal": "^2.2.3",
     "lodash.debounce": "^4.0.8",
     "monaco-editor": "npm:@codingame/monaco-vscode-editor-api@^25.0.0",
-    "react-dom": ">=19.2.3",
+    "react-dom": ">=18.3.1",
     "vscode": "npm:@codingame/monaco-vscode-extension-api@^25.0.0"
   },
   "devDependencies": {
