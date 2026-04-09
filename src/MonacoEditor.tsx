@@ -233,9 +233,11 @@ function MonacoEditor ({
         }
       } else {
         model = monaco.editor.createModel(value!, monacoLanguage)
+
+        const modelIRefPromise = createModelReference(model.uri)
         disposableStore.add({
           dispose () {
-            model.dispose()
+            void modelIRefPromise.then(modelIRef => modelIRef.dispose(), console.error)
           }
         })
       }
