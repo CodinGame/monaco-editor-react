@@ -1,12 +1,12 @@
 {
   "extends": "@codingame/tsconfig",
   "compilerOptions": {
+    "moduleResolution": "bundler",
     "strict": true,
     "outDir": "dist/",
     "rootDir": "src/",
     "declaration": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "./src",
     "jsx": "react",
     "lib": [
       "dom",
@@ -14,11 +14,6 @@
       "esnext"
     ],
     "module": "esnext",
-    "paths": {
-      "app/*": [
-        "*"
-      ]
-    },
     "resolveJsonModule": true,
     "sourceMap": true,
     "target": "ES2022",
