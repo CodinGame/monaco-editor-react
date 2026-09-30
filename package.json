@@ -39,7 +39,7 @@
   ],
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@codingame/monaco-editor-wrapper": "^33.0.0",
+    "@codingame/monaco-editor-wrapper": "^34.0.0",
     "deep-equal": "^2.2.3",
     "lodash.debounce": "^4.0.8",
     "monaco-editor": "npm:@codingame/monaco-vscode-editor-api@^37.1.0",
